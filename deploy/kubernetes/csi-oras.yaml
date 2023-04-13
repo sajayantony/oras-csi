@@ -3,6 +3,11 @@ apiVersion: storage.k8s.io/v1
 kind: CSIDriver
 metadata:
   name: csi.oras.land
+  labels:
+    app.kubernetes.io/instance: csi.oras.land 
+    app.kubernetes.io/part-of: csi-driver-oras
+    app.kubernetes.io/name: csi.oras.land
+    app.kubernetes.io/component: oras-csi-driver
 spec:
   attachRequired: false
   podInfoOnMount: true
@@ -114,6 +119,11 @@ apiVersion: apps/v1
 metadata:
   name: csi-oras-node
   namespace: kube-system
+  labels:
+      app.kubernetes.io/instance: csi.oras.land 
+      app.kubernetes.io/part-of: csi-driver-oras
+      app.kubernetes.io/name: csi-oras-node
+      app.kubernetes.io/component: oras-csi-daemonset
 spec:
   selector:
     matchLabels:
@@ -157,7 +167,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ghcr.io/converged-computing/oras-csi-plugin:latest
+          image: localhost:5001/oras-csi-plugin:latest
           args:
             - "--mode=node"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
